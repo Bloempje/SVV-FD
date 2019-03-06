@@ -1,13 +1,13 @@
-gamma = 1.4 ;
-R = 287.058 ; %[J/kg*K]
-T_0 = 200 ; %[K]
-h_p = 10000 ; %[m]
-bpr = 2.6 ;
-M_0 = V_0*sqrt(gamma*R*T_0) ;
-m_f1 = 0.177 ;  %[kg/s] - fuel flow
-m_f2 = 0.177 ;  %[kg/s] - fuel flow
-m = 35.245 ;    %[kg/s] - total mass flow
-T_ISA = T_0 + (bpr*h_p) ; %[K] - ISA Temperature
+gamma = 1.4 ;   % spec. heat ratio
+R_s = 287.058 ; % [J/kg*K] - spec. gas constant
+T_0 = 200 ;     % [K] - undisturbed outside temp.
+h_p = 10000 ;   % [m] - ISA pressure altitude
+bpr = 2.6 ;     % by-pass ratio
+M_0 = V_0*sqrt(gamma*R_s*T_0) ; % undisturbed Mach number
+m_f1 = 0.177 ;  % [kg/s] - fuel flow
+m_f2 = 0.177 ;  % [kg/s] - fuel flow
+m = 35.245 ;    % [kg/s] - total mass flow
+T_ISA = T_0 + (bpr*h_p) ; % [K] - ISA Temperature
 
 % ---------------------------------------------------------------------
 
