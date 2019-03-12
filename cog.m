@@ -47,6 +47,7 @@ plot(Time,Mass_t,Time,FU);
 FDvariables = (fields(FD.flightdata));    
 FU_total = P2KG(FU(length(FU)));
 
+
 %CONVERSON FUNCTIONS
 function pounds = KG2P(kg)
     pounds = kg / 0.453592;
