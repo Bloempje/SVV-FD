@@ -42,11 +42,18 @@ CG_start = Moment_RAMP/Mass_ramp ;          %defined from nose
 for i=1:length(FU)
     Mass_t(i)= Mass_ramp - FU(i);
 end
+for i=1:length(Time)
+    BEMline(i) = BEM ;
+    BEMPAYline(i) = BEM + Mass_PAY;
+    BEMPAYFUELline(i) = BEM + Mass_PAY + FUEL0;
+end
+plot(Time,Mass_t,Time,FU,Time,BEMplot,Time,BEMPAYplot,Time,BEMPAYFUELline);
+title('Total weight & Fuel consumed - plot')
+xlabel('Time (sec)')
+ylabel('Weight (lbs)')
 
-plot(Time,Mass_t,Time,FU);
 FDvariables = (fields(FD.flightdata));    
 FU_total = P2KG(FU(length(FU)));
-
 
 %CONVERSON FUNCTIONS
 function pounds = KG2P(kg)
