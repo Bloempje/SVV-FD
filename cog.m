@@ -6,7 +6,6 @@ Time = FD.flightdata.time.data ;                                            %Tim
 FU = FD.flightdata.lh_engine_FU.data + FD.flightdata.rh_engine_FU.data ;    %FUEL USED
 TAS = FD.flightdata.Dadc1_tas.data ;                                        %True Airspeed
 
-
 %START MASS IN POUNDS
 BEM  =  9165 ;    %Provided Basic Empty Mass in POUNDS
 FUEL0=  3850 ;    %Total Fuel on T=0
