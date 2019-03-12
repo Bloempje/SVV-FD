@@ -1,7 +1,4 @@
-gamma = 1.4 ;   % spec. heat ratio
-R_s = 287.058 ; % [J/kg*K] - spec. gas constant
-bpr = 2.6 ;     % by-pass ratio
-mf = 35.245 ;   % [kg/s] - total mass flow
+load FTISxprt-20190308_125059.mat
 
 % ---------------------------------------------------------------------
 
