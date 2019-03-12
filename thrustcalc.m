@@ -25,11 +25,12 @@ M = flightdata.Dadc1_mach.data ; % [M]
 T_ISA = 288.15 + ((-0.0065)*h_p) ; % [K]
 
 % Temp. difference
-dT = T_ISA - Tm_t ; % [K]
+dT = Tm_t - T_ISA ; % [K]
 
 % ---------------------------------------------------------------------
 
 % Merging data set - correct format
 data = [h_p M dT mfl mfr] ;
+data = round(data*1000)/1000 ;
 dlmwrite('matlab.dat',data,'delimiter',' ') 
 load matlab.dat   % load the file
