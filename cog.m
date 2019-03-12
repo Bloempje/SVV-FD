@@ -1,12 +1,11 @@
-%IMPORT FLIGHT DATA FILE 
+%IMPORTS: MATLAB FILES // FLIGHT DATA FILE // FUEL DATA
+Cit_par_mat , statespace_EOM;
+FUELfile = csvread('FUELdata.txt') ;
 FD = open('FTISxprt-20190308_125059.mat') ;     
 Time = FD.flightdata.time.data ;                                            %Time in (mili)seconds
 FU = FD.flightdata.lh_engine_FU.data + FD.flightdata.rh_engine_FU.data ;    %FUEL USED
 TAS = FD.flightdata.Dadc1_tas.data ;                                        %True Airspeed
 
-%IMPORT FUEL DATA AND OTHER MATLAB
-%Cit_par_mat , statespace_EOM;
-FUELfile = csvread('FUELdata.txt') ;
 
 %START MASS IN POUNDS
 BEM  =  9165 ;    %Provided Basic Empty Mass in POUNDS
@@ -42,12 +41,14 @@ CG_start = Moment_RAMP/Mass_ramp ;          %defined from nose
 for i=1:length(FU)
     Mass_t(i)= Mass_ramp - FU(i);
 end
+
+%PLOT WEIGHTS
 for i=1:length(Time)
     BEMline(i) = BEM ;
     BEMPAYline(i) = BEM + Mass_PAY;
     BEMPAYFUELline(i) = BEM + Mass_PAY + FUEL0;
 end
-plot(Time,Mass_t,Time,FU,Time,BEMplot,Time,BEMPAYplot,Time,BEMPAYFUELline);
+plot(Time,Mass_t,Time,FU,Time,BEMline,Time,BEMPAYline,Time,BEMPAYFUELline);
 title('Total weight & Fuel consumed - plot')
 xlabel('Time (sec)')
 ylabel('Weight (lbs)')
