@@ -9,9 +9,12 @@ TAS = FD.flightdata.Dadc1_tas.data ;
 FUELfile = csvread('FUELdata.txt') ;
 
 %START MASS IN POUNDS
-BEM       =  8060 ;    %Provided Basic Empty Mass in POUNDS
-FUEL0     =  3850 ;    %Total Fuel on T=0
-Mass_PAY   =  sum(KG2P(Mass_pax)) ;    %Total payload in POUNDS
+BEM  =  8060 ;    %Provided Basic Empty Mass in POUNDS
+FUEL0=  3850 ;    %Total Fuel on T=0
+Mass_pax  = [82,92,75,56,63,75,75,76,77];  %KG!!!
+Mass_bag  = [0,0,0];                       %KG!!!
+Mass_PAY  =  sum(KG2P(Mass_pax)) ;    %Total payload in POUNDS
+
 Mass_ramp =  BEM + FUEL0 + Mass_PAY;
 ZFM       =  BEM + Mass_PAY;
 MAC       =  89.89 ;           %inches
@@ -22,8 +25,6 @@ Weight_main = 8000;
 D_bem = 300.21 - (218.2*Weight_nose / (Weight_nose+Weight_main));
 D_pax = [131,131,214,214,251,251,288,288,170];   %inch
 D_bag = [74,321,338];                            %inch
-Mass_pax = [82,92,75,56,63,75,75,76,77];  %KG!!!
-Mass_bag = [0,0,0];                       %KG!!!
 
 Moment_BEM  = BEM * D_bem;
 Moment_pax = D_pax.*KG2P(Mass_pax);
@@ -42,18 +43,9 @@ for i=1:length(FU)
     Mass_t(i)= Mass_ramp - FU(i);
 end
 
-
-for i=1:length(FDvariables)
-    VarDesc = fopen("Flightdata-Variable-Description.txt","w") ;
-    FDvariables = cell2mat((fields(FD.flightdata)) ;
-    fprintf(VarDesc,'%6s %12s\r\n','variable','description');
-    fprintf(VarDesc,'%6.2f %12.8f\r\n',1  )
-    fclose(VarDesc) ;
-end
+plot(Time,Mass_t,Time,FU);
+FDvariables = (fields(FD.flightdata));
     
-
-
-
 
 %CONVERSON FUNCTIONS
 function pounds = KG2P(kg)
