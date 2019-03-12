@@ -1,6 +1,5 @@
 %IMPORT FLIGHT DATA FILE 
 FD = open('FTISxprt-20190308_125059.mat') ;
-FDvariables = fields(FD.flightdata) ; 
 Time = FD.flightdata.time.data ;
 FU = FD.flightdata.lh_engine_FU.data + FD.flightdata.rh_engine_FU.data ;
 TAS = FD.flightdata.Dadc1_tas.data ;   
@@ -12,9 +11,9 @@ FUELfile = csvread('FUELdata.txt') ;
 %START MASS IN POUNDS
 BEM       =  8060 ;    %Provided Basic Empty Mass in POUNDS
 FUEL0     =  3850 ;    %Total Fuel on T=0
-PAYLOAD   =  sum(KG2P(Mass_pax)) ;    %Total payload in POUNDS
-Mass_ramp =  BEM + FUEL0 + PAYLOAD;
-ZFM       =  BEM + PAYLOAD;
+Mass_PAY   =  sum(KG2P(Mass_pax)) ;    %Total payload in POUNDS
+Mass_ramp =  BEM + FUEL0 + Mass_PAY;
+ZFM       =  BEM + Mass_PAY;
 MAC       =  89.89 ;           %inches
 Weight_nose = 3000;
 Weight_main = 8000;
@@ -42,6 +41,18 @@ CG_start = Moment_RAMP / Mass_ramp     ;     %defined from nose
 for i=1:length(FU)
     Mass_t(i)= Mass_ramp - FU(i);
 end
+
+
+for i=1:length(FDvariables)
+    VarDesc = fopen("Flightdata-Variable-Description.txt","w") ;
+    FDvariables = cell2mat((fields(FD.flightdata)) ;
+    fprintf(VarDesc,'%6s %12s\r\n','variable','description');
+    fprintf(VarDesc,'%6.2f %12.8f\r\n',1  )
+    fclose(VarDesc) ;
+end
+    
+
+
 
 
 %CONVERSON FUNCTIONS
