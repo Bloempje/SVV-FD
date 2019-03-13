@@ -1,7 +1,6 @@
 % Citation 550 - Linear simulation
-
 % xcg = 0.25*c
-
+fopen("cog.m")
 % Stationary flight condition
 
 hp0    = 2000;      	  % pressure altitude in the stationary flight condition [m]
@@ -10,7 +9,7 @@ alpha0 = -2*pi/180;       	  % angle of attack in the stationary flight conditio
 th0    = 5*pi/180;       	  % pitch angle in the stationary flight condition [rad]
 
 % Aircraft mass
-m      = 60500/9.81;         	  % mass [kg]
+m     = 60500/9.81;         	  % mass [kg]
 
 % aerodynamic properties
 e      = 0.8;            % Oswald factor [ ]
@@ -62,6 +61,7 @@ Cmac   = 0;                     % Moment coefficient about the aerodynamic centr
 CNwa   = CLa;   		        % Wing normal force slope [ ]
 CNha   = 2*pi*Ah/(Ah+2);        % Stabiliser normal force slope [ ]
 depsda = 4/(A+2);               % Downwash gradient [ ]
+MAC       =  89.89 ;  
 
 % Lift and drag coefficient
 
