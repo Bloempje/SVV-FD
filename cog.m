@@ -10,7 +10,7 @@ TAS = FD.flightdata.Dadc1_tas.data ;                                        %Tru
 stickforce = FD.flightdata.column_fe.data ;                                 %Stickforce
 AOA = FD.flightdata.vane_AOA.data ;                                         %Angle of Attack
 H_BC = FD.flightdata.Dadc1_bcAlt.data ;                                     %Baro corr. alt
-%% START MASS & Xcg 
+%% START MASS & CG 
 BEM  =  9165 ;                                                              %Provided Basic Empty Mass in (POUNDS)
 Mass_fuel0=  3850 ;                                                         %Total Fuel on T=0 (POUNDS)   
 Mass_pax  = KG2P([82,92,56,63,75,75,76,77,75]);                             %Passenger Mass (INPUT = KG)
@@ -32,7 +32,7 @@ Moment_pax = D_pax.*(Mass_pax);                                             %Mom
 Moment_bag = D_bag.*(Mass_bag);                                             %Moment Bags (INCH-POUNDS)
 Moment_pay  = sum(Moment_pax) + sum(Moment_bag);                            %Moment Payload (INCH-POUNDS)
 
-Moment_fuel0 = 100*interp1(FF(:,1),FF(:,2),Mass_fuel0);         %Moment Fuel (INCH-POUNDS)
+Moment_fuel0 = 100*interp1(FF(:,1),FF(:,2),Mass_fuel0);                     %Moment Fuel (INCH-POUNDS)
 
 Moment_0 = Moment_BEM + Moment_pay + Moment_fuel0;                          %Ramp T=0 Moment (INCH-POUNDS)
 CG_0 = Moment_0/Mass_0 ;                                                    %Ramp T=0 Xcog (INCH)
@@ -56,23 +56,32 @@ for i=1:length(Time)
     Line_BEM(i) = BEM ;
     Line_PAY(i) = BEM + Mass_pay;
     Line_0(i) = BEM + Mass_pay + Mass_fuel0;
+    Line_CG1(i) = 276.10 ;
+    Line_CG2(i) = 285.8 ;
 end
-%plot(Time,Mass_t,Time,FU,Time,Line_BEM,Time,Line_PAY,Time,Line_0);
-%title('Total weight & Fuel consumed - plot')
+
+plot(Time,Mass_t,Time,FU,Time,Line_BEM,Time,Line_PAY,Time,Line_0);
+title('Total weight & Fuel consumed - plot')
 
 plot(Time,stickforce,Time,AOA,Time,H_BC/100) ;
 title('Stickforce & AOA & ALT - plot') ;
 
-%plot(Time,CG_t) ;
-title('Xcg plot') ;
+plot(Time,CG_t,Time,Line_CG1,Time,Line_CG2) ;
+title('CG plot') ;
 
-%% SI UNITS EXPORTS
+%% SI UNITS & EXPORTS
 SI_Mass_t = P2KG(Mass_t) ; 
-SI_XCG_t = INCH2CM(CG_t)/100 ; 
+SI_CG_t = INCH2CM(CG_t)/100 ; 
 SI_Moment_t = IP2NM(Moment_t) ;
 
-toc                                                                         %Stop Timer
+LEMAC = INCH2CM(261.56)/100  ;                                              %Leading Edge MAC 
+MAC = INCH2CM(80.89)/100     ;                                              %Mean Aerodynamic Chord
+c = 2.0569 ;
+SI_CG_MAC = SI_CG_t - LEMAC ;
+SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;
 
+
+toc                                                                         %Stop Timer
 %% CONVERSON FUNCTIONS
 function pounds = KG2P(kg)                                                  %Kg    -> Lbs      
     pounds = kg / 0.453592;     
@@ -89,6 +98,7 @@ end                                              %Inch  -> Cm
 function NewtonMeter = IP2NM(InchPound)
      NewtonMeter = InchPound*0.112984829 ;
 end                                  %In-lb -> Nm
+
 
 
     
