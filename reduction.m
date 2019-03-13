@@ -47,7 +47,7 @@ mfr = mfr.*(0.45359237/3600) ;   % [kg/s]
 
 % ---------- Reduction of the measured airspeed -------------
 
-for i=1:6
+for i=1:7
     
     V_c = Vc(i)*0.51444 ;   % [m/s] - calibrated airspeed
     T_m = TAT(i) ;          % [K] - measured air temp.
@@ -117,7 +117,7 @@ Mass_PAY  = sum(Mass_pax) + sum(Mass_bag) ;   %Total payload in POUNDS
 Mass_ramp =  BEM + FUEL0 + Mass_PAY ;
 ZFM       =  BEM + Mass_PAY ;
 
-for i=1:6
+for i=1:7
     
     % aircraft mass
     Mass_t = Mass_ramp - Wfu(i) ; % [lbs]
