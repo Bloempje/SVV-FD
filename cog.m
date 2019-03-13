@@ -12,9 +12,9 @@ BEM  =  9165 ;    %Provided Basic Empty Mass in POUNDS
 Mass_fuel0=  3850 ;    %Total Fuel on T=0
 Mass_pax  = KG2P([82,92,56,63,75,75,76,77,75]); 
 Mass_bag  = KG2P([0,0,0]);                       
-Mass_PAY  = sum(Mass_pax) + sum(Mass_bag) ;         %Total payload in POUNDS
-Mass_ZF   =  BEM + Mass_PAY;
-Mass_ramp =  BEM + Mass_PAY + Mass_fuel0 ;
+Mass_pay  = sum(Mass_pax) + sum(Mass_bag) ;         %Total payload in POUNDS
+Mass_ZF   =  BEM + Mass_pay;
+Mass_ramp =  BEM + Mass_pay + Mass_fuel0 ;
 
 %START CENTER OF GRAVITY
 Weight_nose_jack = 1220*9.81;
@@ -27,28 +27,28 @@ D_pax = [131,131,214,214,251,251,288,288,170];   %inch
 D_bag = [74,321,338];                            %inch
 Moment_pax = D_pax.*(Mass_pax);
 Moment_bag = D_bag.*(Mass_bag);
-Moment_PAY  = sum(Moment_pax) + sum(Moment_bag);
+Moment_pay  = sum(Moment_pax) + sum(Moment_bag);
 
-Moment_FUEL0 = 100*interp1(FUELfile(:,1),FUELfile(:,2),Mass_fuel0);
+Moment_fuel0 = 100*interp1(FUELfile(:,1),FUELfile(:,2),Mass_fuel0);
 
-Moment_RAMP = Moment_BEM + Moment_PAY + Moment_FUEL0;
+Moment_RAMP = Moment_BEM + Moment_pay + Moment_fuel0;
 CG_start = Moment_RAMP/Mass_ramp ;          %defined from nose
-
 %% CONTINUOUS MASS AND  CENTER OF GRAVITY
 for i=1:length(FU)
     Mass_t(i)= Mass_ramp - FU(i);
 end
 for i=1:length(Time)
+    Moment_pax_t()
 end   
     
 
 %% PLOTS & EXPORTS
 for i=1:length(Time)
     BEMline(i) = BEM ;
-    BEMPAYline(i) = BEM + Mass_PAY;
-    BEMPAYFUELline(i) = BEM + Mass_PAY + Mass_fuel0;
+    BEMpayline(i) = BEM + Mass_pay;
+    BEMpayFUELline(i) = BEM + Mass_pay + Mass_fuel0;
 end
-plot(Time,Mass_t,Time,FU,Time,BEMline,Time,BEMPAYline,Time,BEMPAYFUELline);
+plot(Time,Mass_t,Time,FU,Time,BEMline,Time,BEMpayline,Time,BEMpayFUELline);
 title('Total weight & Fuel consumed - plot')
 xlabel('Time (sec)')
 ylabel('Weight (lbs)')
