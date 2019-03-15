@@ -1,6 +1,7 @@
 %% MASS & Center of Gravity Balance MATLAB FILE B15
 %% IMPORTS: MATLAB FILES // FLIGHT DATA FILE // FUEL DATA
 tic , %Cit_par_mat , statespace_EOM;                                        %open matlab group file                                                                                    
+RFD = load('ReferenceFD.mat') ;
 FF = csvread('FUELdata.txt') ;                                              %open fuel moment file
 FD = open('FTISxprt-20190308_125059.mat') ;                                 %open flightdata file
 Time = FD.flightdata.time.data ;                                            %Time in (deci)seconds
