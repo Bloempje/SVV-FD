@@ -1,7 +1,7 @@
 %% MASS & Center of Gravity Balance MATLAB FILE B15
 %% IMPORTS: MATLAB FILES // FLIGHT DATA FILE // FUEL DATA
 tic , %Cit_par_mat , statespace_EOM;                                        %open matlab group file                                                                                    
-RFD = load('ReferenceFD.mat') ;
+REFFD = load('ReferenceFD.mat') ;
 FF = csvread('FUELdata.txt') ;                                              %open fuel moment file
 FD = open('FTISxprt-20190308_125059.mat') ;                                 %open flightdata file
 Time = FD.flightdata.time.data ;                                            %Time in (deci)seconds
@@ -39,20 +39,24 @@ Moment_0 = Moment_BEM + Moment_pay + Moment_fuel0;                          %Ram
 CG_0 = Moment_0/Mass_0 ;                                                    %Ramp T=0 Xcog (INCH)
 
 %% CONTINUOUS MASS AND  CENTER OF GRAVITY
+Mass_t=zeros(size(Time)); Mass_fuel_t=zeros(size(Time));Moment_fuel_t=zeros(size(Time)); Moment_Shift=zeros(size(Time));
+Moment_t=zeros(size(Time));CG_t=zeros(size(Time));                          %Preallocating arrays
 for i=1:length(Time)
     Mass_t(i)= Mass_0 - FU(i) ;                                             %Continuous Mass
     Mass_fuel_t(i) = Mass_fuel0 - FU(i) ;                                   %Continuous Fuel Mass
     Moment_fuel_t(i)= 100*interp1(FF(:,1),FF(:,2),Mass_fuel_t(i));          %Continuous Fuel Moment
     if (i > ((52.5*60*10)-89)) && (i < ((54.5*60*10)-89))                   %IF time in range Pax shift
-        Moment_S(i) = Mass_pax(8)*D_pax(1) - Mass_pax(8)*D_pax(8) ;         %Passenger Shift
+        Moment_Shift(i) = Mass_pax(8)*D_pax(1) - Mass_pax(8)*D_pax(8) ;         %Passenger Shift
     else    
-        Moment_S(i) = 0 ;
+        Moment_Shift(i) = 0 ;
     end
-    Moment_t(i) = Moment_BEM + Moment_fuel_t(i) + Moment_pay + Moment_S(i); %Continuous Moment
+    Moment_t(i) = Moment_BEM + Moment_fuel_t(i) + Moment_pay + Moment_Shift(i); %Continuous Moment
     CG_t(i) = Moment_t(i)/Mass_t(i) ;                                       %Continuous Xcog 
 end   
 
 %% PLOTS
+Line_BEM=zeros(size(Time));Line_PAY=zeros(size(Time));Line_0=zeros(size(Time));
+Line_CG1=zeros(size(Time));Line_CG2=zeros(size(Time)) ;                     %preallocating array lines
 for i=1:length(Time)
     Line_BEM(i) = BEM ;
     Line_PAY(i) = BEM + Mass_pay;
