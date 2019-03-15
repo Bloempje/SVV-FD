@@ -8,7 +8,8 @@ Time = FD.flightdata.time.data ;    %Time in (mili)seconds
 g = 9.81 ;          % [m/s^2] gravitational constant
 gamma = 1.4 ;       % spec. heat ratio
 R = 287.05 ;        % [J/kg*K] - spec. gas constant
-S = 30.00 ;	        % wing area [m^2]
+S = 30.00 ;	        % [m^2] wing area
+E_d = 0.686 ;         % [m] characteristic diameter JT15D-4 engine
 bpr = 2.6 ;         % by-pass ratio
 mf = 35.245 ;       % [kg/s] - total mass flow
 mff = 0.177;        % [kg/s] - engine fuel flow
@@ -63,7 +64,9 @@ Vc = Vc.*0.51444 ; %[m/s]
 
 %% ---------- Reduction of the non-standard engine thrust -------------
 
-de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, S) ;
+de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, E_d) ;
+
+%% ------------ Drawing the reduced elevator trim curve --------------
 
 %% ----------------- Conversion functions --------------------
 
@@ -125,34 +128,30 @@ function [T, Ts] = thrustcalc(TAT, hp0, lambda, Mach, mfl, mfr, mffs)
 
     % Merging data set - correct format
     data = [hp0 Mach dT mfl mfr] ;
-    data = round(data*1000)/1000 ;
     dlmwrite('matlab.dat',data,'delimiter',' ') 
-    load matlab.dat   % load the file
 
     % Execute thrust calculations
     !Thrust.exe & ;
 
     pause(1) ;
 
-    load thrust.dat  % load thrust force per engine
+    T1 = load('thrust.dat') ;  % load thrust force per engine
 
-    T = sum(thrust,2) ;
+    T = sum(T1,2) ;
 
     % STANDARDIZED VERSION
 
     datas = [hp0 Mach dT mffs mffs] ;
-    datas = round(datas*1000)/1000 ;
     dlmwrite('matlab.dat',datas,'delimiter',' ') 
-    load matlab.dat   % load the file
 
     % Execute thrust calculations
     !Thrust.exe & ;
 
     pause(1) ;
 
-    load thrust.dat   % load thrust force per engine
+    T2 = load('thrust.dat') ;   % load thrust force per engine
 
-    Ts = sum(thrust,2) ;
+    Ts = sum(T2,2) ;
     
 end
 
@@ -195,15 +194,17 @@ function [Mass, W, Ve_r] = massred(Wfu, Ws, Ve, g)
     
 end
 
-function de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, S)
+function de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, E_d)
 
-    Tc = T./(0.5*rho*(Vc.^(2))*S) ;
-    Tcs = Ts./(0.5*rho_isa*(Vc.^(2))*S) ;
+    A = ((E_d/2)^(2))*pi ; % area of the engine inlet
+
+    Tc = T./(0.5*rho*(Vc.^(2))*A) ;
+    Tcs = Ts./(0.5*rho_isa*(Vc.^(2))*A) ;
 
     for b=1:7
 
         % reduced equivalent airspeed
-        der = de(b) - ((CmTc/Cmde)*(Tcs(b) - Tc(b))) ;
+        der = de(b) - ((CmTc/Cmde)*(Tcs(b) - Tc(b))); 
 
         de_r(b) = der ;
 
