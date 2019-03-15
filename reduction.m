@@ -9,7 +9,7 @@ g = 9.81 ;          % [m/s^2] gravitational constant
 gamma = 1.4 ;       % spec. heat ratio
 R = 287.05 ;        % [J/kg*K] - spec. gas constant
 S = 30.00 ;	        % [m^2] wing area
-E_d = 0.686 ;         % [m] characteristic diameter JT15D-4 engine
+E_d = 0.686 ;       % [m] characteristic diameter JT15D-4 engine
 bpr = 2.6 ;         % by-pass ratio
 mf = 35.245 ;       % [kg/s] - total mass flow
 mff = 0.177;        % [kg/s] - engine fuel flow
@@ -67,6 +67,8 @@ Vc = Vc.*0.51444 ; %[m/s]
 de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, E_d) ;
 
 %% ------------ Drawing the reduced elevator trim curve --------------
+
+trimcurve(Ve_r, de_r)
 
 %% ----------------- Conversion functions --------------------
 
@@ -211,5 +213,32 @@ function de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, E_d)
     end
 
     de_r = de_r' ;
+
+end
+
+function trimcurve(Ve_r, de_r)
+
+    D = sort(Ve_r) ;
+    E = sort(de_r) ;
+
+    plot(D,E,'.b')
+    p = polyfit(D,E,2) ;
+    f = polyval(p,D);
+    hold on
+    plot(D,f,'-r')
+    ax = gca ;
+    ax.YDir = 'reverse' ;
+    plot(65:95, zeros(31, 1),'k')
+
+    legend('data points','Elevator trim curve')
+    text(70, -1.25, 'Configuration: (Gear up, flaps up)');
+    legendText2 = sprintf('Cm_{\alpha} < 0');
+    text(75, -0.5, 'Cm_{\alpha} < 0');
+
+    title('Elevator trim curve of the Cessna Citation - II PH-LAB')
+    xlabel('Reduced equivalent airspeed V_{e}')
+    ylabel('Reduced elevator deflection \delta_{e}')
+
+    grid on
 
 end
