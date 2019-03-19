@@ -1,6 +1,7 @@
 %% MASS & Center of Gravity Balance MATLAB FILE B15
+tic , Cit_par_mat                                                           %start timer
+statespace_EOM, reduction                                                   %open group files                                                                                   
 %% IMPORTS: MATLAB FILES // FLIGHT DATA FILE // FUEL DATA
-tic , Cit_par_mat , statespace_EOM , reduction                             %open matlab group file                                                                                    
 REFFD = load('ReferenceFD.mat') ;
 FF = csvread('FUELdata.txt') ;                                              %open fuel moment file
 FD = open('FTISxprt-20190308_125059.mat') ;                                 %open flightdata file
@@ -84,9 +85,8 @@ SI_Mass_t = P2KG(Mass_t) ;                                                  %Con
 SI_CG_t = INCH2CM(CG_t)/100 ;                                               %Continuous cog in M
 SI_Moment_t = IP2NM(Moment_t) ;                                             %continuous Moment in Nm
 
-LEMAC = INCH2CM(261.56)/100  ;                                              %Leading Edge MAC 
-MAC = INCH2CM(80.89)/100     ;                                              %Mean Aerodynamic Chord
-c = 2.0569 ;                                                                %MAC in M
+LEMAC = 261.56 ; MAC = 80.89 ;                                              %Leading Edge Mean Aerodynamic Chord                                     
+SI_MAC = 2.0569 ;                                                           %MAC in M
 SI_CG_MAC = SI_CG_t - LEMAC ;                                               %continuous cog from Lemac in M
 SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;                                        %continuous cog % of chord
 
