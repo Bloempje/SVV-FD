@@ -1,6 +1,6 @@
 %% MASS & Center of Gravity Balance MATLAB FILE B15
 %% IMPORTS: MATLAB FILES // FLIGHT DATA FILE // FUEL DATA
-tic , %Cit_par_mat , statespace_EOM;                                        %open matlab group file                                                                                    
+tic , Cit_par_mat , statespace_EOM , reduction                             %open matlab group file                                                                                    
 REFFD = load('ReferenceFD.mat') ;
 FF = csvread('FUELdata.txt') ;                                              %open fuel moment file
 FD = open('FTISxprt-20190308_125059.mat') ;                                 %open flightdata file
@@ -65,15 +65,15 @@ for i=1:length(Time)
     Line_CG2(i) = 285.8 ;
 end
 
-figure(1)
+figure(21)
 plot(Time,Mass_t,Time,FU,Time,Line_BEM,Time,Line_PAY,Time,Line_0);
 title('Total weight & Fuel consumed - plot')
 
-figure(2)
+figure(22)
 plot(Time,stickforce,Time,AOA,Time,H_BC/100) ;
 title('Stickforce & AOA & ALT - plot') ;
 
-figure(3)
+figure(23)
 plot(Time,CG_t,Time,Line_CG1,Time,Line_CG2) ;
 title('CG plot') ;
 

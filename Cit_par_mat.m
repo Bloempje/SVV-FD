@@ -1,20 +1,20 @@
-% Citation 550 - Linear simulation
+%% Citation 550 - Linear simulation
 % xcg = 0.25*c
 fopen("cog.m")
 % Stationary flight condition
 
 hp0    = 2000;      	  % pressure altitude in the stationary flight condition [m]
-V0     = 200;            % true airspeed in the stationary flight condition [m/sec]
-alpha0 = -2*pi/180;       	  % angle of attack in the stationary flight condition [rad]
-th0    = 5*pi/180;       	  % pitch angle in the stationary flight condition [rad]
+V0     = 200;             % true airspeed in the stationary flight condition [m/sec]
+alpha0 = -2*pi/180;       % angle of attack in the stationary flight condition [rad]
+th0    = 5*pi/180;        % pitch angle in the stationary flight condition [rad]
 
 % Aircraft mass
-m     = 60500/9.81;         	  % mass [kg]
+m     = 60500/9.81;       % mass [kg]
 
 % aerodynamic properties
-e      = 0.8;            % Oswald factor [ ]
+e      = 0.8;             % Oswald factor [ ]
 CD0    =0.04 ;            % Zero lift drag coefficient [ ]
-CLa    =5.084 ;            % Slope of CL-alpha curve [ ]
+CLa    =5.084 ;           % Slope of CL-alpha curve [ ]
 
 % Longitudinal stability
 Cma    = -0.2;            % longitudinal stabilty [ ]
@@ -28,7 +28,7 @@ Sh_S   = Sh/S;	          % [ ]
 lh     = 0.71*5.968;      % tail length [m]
 c      = 2.0569;          % mean aerodynamic cord [m]
 lh_c   = lh/c;	          % [ ]
-b      = 15.911;	  % wing span [m]
+b      = 15.911;          % wing span [m]
 bh     = 5.791;	          % stabilser span [m]
 A      = b^2/S;           % wing aspect ratio [ ]
 Ah     = bh^2/Sh;         % stabilser aspect ratio [ ]
