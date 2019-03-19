@@ -29,7 +29,7 @@ Moment_BEM  = BEM * D_BEM;                                                  %Mom
 
 D_pax = [131,131,214,214,251,251,288,288,170];                              %ARM Passengers (INCH)
 D_bag = [74,321,338];                                                       %ARM Bags (INCH)
-Moment_pax = D_pax.*(Mass_pax);                                             %Moment Passengers (INCH-POUNDS)
+Moment_pax = D_pax.*(Mass_pax) ;                                            %Moment Passengers (INCH-POUNDS)
 Moment_bag = D_bag.*(Mass_bag);                                             %Moment Bags (INCH-POUNDS)
 Moment_pay  = sum(Moment_pax) + sum(Moment_bag);                            %Moment Payload (INCH-POUNDS)
 
@@ -45,7 +45,7 @@ for i=1:length(Time)
     Mass_t(i)= Mass_0 - FU(i) ;                                             %Continuous Mass
     Mass_fuel_t(i) = Mass_fuel0 - FU(i) ;                                   %Continuous Fuel Mass
     Moment_fuel_t(i)= 100*interp1(FF(:,1),FF(:,2),Mass_fuel_t(i));          %Continuous Fuel Moment
-    if (i > ((52.5*60*10)-89)) && (i < ((54.5*60*10)-89))                   %IF time in range Pax shift
+    if (i > ((52.5*60*10)-89)) && (i < ((54*60*10)-89))                   %IF time in range Pax shift
         Moment_Shift(i) = Mass_pax(8)*D_pax(1) - Mass_pax(8)*D_pax(8) ;         %Passenger Shift
     else    
         Moment_Shift(i) = 0 ;
@@ -86,10 +86,9 @@ SI_Moment_t = IP2NM(Moment_t) ;                                             %con
 
 LEMAC = INCH2CM(261.56)/100  ;                                              %Leading Edge MAC 
 MAC = INCH2CM(80.89)/100     ;                                              %Mean Aerodynamic Chord
-c = 2.0569 ;                                                                %root chord in M
+c = 2.0569 ;                                                                %MAC in M
 SI_CG_MAC = SI_CG_t - LEMAC ;                                               %continuous cog from Lemac in M
 SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;                                        %continuous cog % of chord
-
 
 toc                                                                         %Stop Timer
 %% CONVERSON FUNCTIONS
