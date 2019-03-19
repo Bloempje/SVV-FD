@@ -65,25 +65,30 @@ for i=1:length(Time)
     Line_CG2(i) = 285.8 ;
 end
 
+figure(1)
 plot(Time,Mass_t,Time,FU,Time,Line_BEM,Time,Line_PAY,Time,Line_0);
 title('Total weight & Fuel consumed - plot')
 
+figure(2)
 plot(Time,stickforce,Time,AOA,Time,H_BC/100) ;
 title('Stickforce & AOA & ALT - plot') ;
 
+figure(3)
 plot(Time,CG_t,Time,Line_CG1,Time,Line_CG2) ;
 title('CG plot') ;
 
+
+
 %% SI UNITS & EXPORTS
-SI_Mass_t = P2KG(Mass_t) ; 
-SI_CG_t = INCH2CM(CG_t)/100 ; 
-SI_Moment_t = IP2NM(Moment_t) ;
+SI_Mass_t = P2KG(Mass_t) ;                                                  %Continuous mass in Kg
+SI_CG_t = INCH2CM(CG_t)/100 ;                                               %Continuous cog in M
+SI_Moment_t = IP2NM(Moment_t) ;                                             %continuous Moment in Nm
 
 LEMAC = INCH2CM(261.56)/100  ;                                              %Leading Edge MAC 
 MAC = INCH2CM(80.89)/100     ;                                              %Mean Aerodynamic Chord
-c = 2.0569 ;
-SI_CG_MAC = SI_CG_t - LEMAC ;
-SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;
+c = 2.0569 ;                                                                %root chord in M
+SI_CG_MAC = SI_CG_t - LEMAC ;                                               %continuous cog from Lemac in M
+SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;                                        %continuous cog % of chord
 
 
 toc                                                                         %Stop Timer
