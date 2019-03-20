@@ -75,7 +75,7 @@ trimcurve(Ve_r, de_r)
 
 %% -------------- Reduced elevator control force curve ----------------
 
-Fe_r = controlcurve(Fe, Ws, W, Ve_r) ;
+[Fe_r, detr, xcg] = controlcurve(Fe, Ws, W, Ve_r) ;
 
 
 %% --------------------- Elevator effectiveness -----------------------
@@ -224,7 +224,7 @@ function de_r = elevred(T, Ts, de, CmTc_ref, Cmde_ref, rho, Vc, E_d)
     A = ((E_d/2)^(2))*pi ;                 % [m^2] area of the engine inlet
 
     Tc = T./(0.5*rho.*(Vc.^(2))*A) ;       % thrust coefficient
-    Tcs = Ts./(0.5*rho.*(Vc.^(2))*A) ;      % standard thrust coefficient
+    Tcs = Ts./(0.5*rho.*(Vc.^(2))*A) ;     % standard thrust coefficient
     
     for b=1:7
 
@@ -266,9 +266,11 @@ function trimcurve(Ve_r, de_r)
 
 end
 
-function Fe_r = controlcurve(Fe, Ws, W, Ve_r)
+function [Fe_r, detr, xcg] = controlcurve(Fe, Ws, W, Ve_r)
 
     Fe_aer = Fe ;   % [N] measured stick force
+    detr = 3.1 ;    % [deg] trim deflection angle
+    xcg = 282.02*0.0254 ;  % c.g. position
 
     for s=1:7
            
