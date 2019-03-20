@@ -16,13 +16,13 @@ mf = 35.245 ;       % [kg/s] - total mass flow
 mff = 0.177;        % [kg/s] - engine fuel flow
 lambda = -0.0065;   % [K/m] - temperature gradient in ISA
 Ws = 60500 ;        % [N] - standard aircraft weight
-Cmde = -1.1642 ;    % Elevator effectiveness
-CmTc = -0.0064 ;    % dimensionless thrust moment arm
+Cmde_ref = -1.1642 ;% Elevator effectiveness
+CmTc_ref = -0.0064 ;% dimensionless thrust moment arm
 
 %% -------------------------- datasheet ------------------------------
 
 hp0 = [11900, 12050, 12090, 12270, 11320, 10700, 10250]' ;  % [ft]
-Vc = [160, 149, 138, 130, 170, 181, 190]' ;                 % [kts]
+Vi = [160, 149, 138, 130, 170, 181, 190]' ;                 % [kts]
 TAT = [-11.8, -12.8, -13.8, -14.2, -10, -8.1, -6.3]' ;      % [C]
 mfl = [391, 388, 388, 385, 402, 411, 418]' ;                % [lbs/hr]
 mfr = [422, 418, 419, 415, 434, 445, 451]' ;                % [lbs/hr]
@@ -41,7 +41,7 @@ alpha = [5.2, 6.2, 7.2, 8.2, 4.4, 3.8, 3.4]' ;              % [deg]
 TAT = TAT + 273.15 ;    % [K]
 
 % pressure altitude
-hp0 = hp0./3.2808399 ;  % [m]
+hp0 = hp0.*0.3048 ;  % [m]
 
 % fuel flow left engine
 mfl = mfl.*(0.45359237/3600) ;   % [kg/s]
@@ -50,7 +50,8 @@ mfl = mfl.*(0.45359237/3600) ;   % [kg/s]
 mfr = mfr.*(0.45359237/3600) ;   % [kg/s]
 
 % calibrated airspeed 
-Vc = Vc.*0.51444 ; %[m/s]
+Vc = Vi - 2 ;
+Vc = Vc.*0.51444 ;  %[m/s]
 
 %% --------------- Reduction of the measured airspeed -----------------
 
@@ -66,7 +67,7 @@ Vc = Vc.*0.51444 ; %[m/s]
 
 %% ---------- Reduction of the non-standard engine thrust -------------
 
-de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, E_d) ;
+de_r = elevred(T, Ts, de, CmTc_ref, Cmde_ref, rho, Vc, E_d) ;
 
 %% ------------ Drawing the reduced elevator trim curve ---------------
 
@@ -90,13 +91,13 @@ Cma_m = longstab(alpha, de, Cmde_m) ;
 
 function pounds = KG2P(kg)
 
-    pounds = kg / 0.453592;
+    pounds = kg / 0.45359237;
     
 end
 
 function kg = P2KG(pounds)
 
-    kg = pounds * 0.453592;
+    kg = pounds * 0.45359237;
     
 end
 
@@ -184,12 +185,11 @@ end
 function [Mass, W, Ve_r, Mass_ramp] = massred(Wfu, Ws, Ve, g)
 
     %START MASS IN POUNDS
-    BEM  =  9165 ;    %Provided Basic Empty Mass in POUNDS
-    FUEL0=  3850 ;    %Total Fuel on T=0
+    BEM  =  9165 ;                  %Provided Basic Empty Mass in POUNDS
+    FUEL0=  3850 ;                  %Total Fuel on T=0
 
-    Mass_pax  = KG2P([82,92,56,63,75,75,76,77,75]) ; 
-    Mass_bag  = KG2P([0,0,0]) ;                       
-    Mass_PAY  = sum(Mass_pax) + sum(Mass_bag) ;   %Total payload in POUNDS
+    Mass_pax  = KG2P([82,92,56,63,75,75,76,77,75]) ;                      
+    Mass_PAY  = sum(Mass_pax) ;     %Total payload in POUNDS
 
     Mass_ramp =  BEM + FUEL0 + Mass_PAY ;
 
@@ -219,17 +219,17 @@ function [Mass, W, Ve_r, Mass_ramp] = massred(Wfu, Ws, Ve, g)
     
 end
 
-function de_r = elevred(T, Ts, de, CmTc, Cmde, rho, rho_isa, Vc, E_d)
+function de_r = elevred(T, Ts, de, CmTc_ref, Cmde_ref, rho, Vc, E_d)
 
     A = ((E_d/2)^(2))*pi ;                 % [m^2] area of the engine inlet
 
     Tc = T./(0.5*rho.*(Vc.^(2))*A) ;       % thrust coefficient
-    Tcs = Ts./(0.5*rho_isa*(Vc.^(2))*A) ;  % standard thrust coefficient
-
+    Tcs = Ts./(0.5*rho.*(Vc.^(2))*A) ;      % standard thrust coefficient
+    
     for b=1:7
 
-        % reduced equivalent airspeed
-        de_temp = (de(b)*pi/180) - ((CmTc/Cmde)*(Tcs(b) - Tc(b))); 
+        % reduced elevator deflection 
+        de_temp = (de(b)*pi/180) - ((CmTc_ref/Cmde_ref)*(Tcs(b) - Tc(b))); 
 
         de_r(b) = (de_temp*180/pi) ;
 
@@ -273,7 +273,7 @@ function Fe_r = controlcurve(Fe, Ws, W, Ve_r)
     for s=1:7
            
         %reduced stick force
-        Fe_aer_temp = Fe_aer(s)*sqrt(Ws/W(s)) ;
+        Fe_aer_temp = Fe_aer(s)*(Ws/W(s)) ;
 
         Fe_aer_r(s) = Fe_aer_temp ;
 
@@ -305,14 +305,15 @@ function Fe_r = controlcurve(Fe, Ws, W, Ve_r)
 
 end
 
-function Cmde_m = eleveff(Mass_ramp, T_isa, P_isa, rho_isa, S, c, g, R, gamma, lambda)
+function Cmde_c = eleveff(Mass_ramp, T_isa, P_isa, rho_isa, S, c, g, R, gamma, lambda)
 
     Mxcg = Mass_ramp - 905 ;    % [lbs] mass at c.g. shift
     Mxcg = P2KG(Mxcg) ;         % [kg]
     Wxcg = Mxcg*g ;             % [N] weight at c.g. shift
-    VIAS = 160*0.51444 ;        % [m/s] average airspeed at c.g. shift
-    dxcg = (282.01 - 280.04)*0.0254 ;   % shift in c.g.
-    de_dxcg = (0.2 - (-0.3))*pi/180 ;   % change in elevator deflection
+    Vi = 160 ;                  % [kts] average airspeed at c.g. shift
+    dxcg = (282.01 - 280.04)*0.0254 ;   % [m] shift in c.g.
+    de_dxcg = (0.2 - (-0.3))*(pi/180) ; % [rad] change in elevator deflection
+    Vc_dxcg = (Vi - 2)*0.51444 ;        % [m/s] cal. airspeed at c.g. shift
     
     T_m = -8.8 + 273.15 ;       % [K] - measured air temp.
     h_p = 10500/3.2808399 ;     % [m] - ISA pressure altitude
@@ -320,20 +321,20 @@ function Cmde_m = eleveff(Mass_ramp, T_isa, P_isa, rho_isa, S, c, g, R, gamma, l
     % computations to get rho
     P = P_isa*(1 + ((lambda*h_p)/T_isa))^(-g/(lambda*R)) ;
     Mch_dxcg = sqrt((2/(gamma - 1))*((1 + (P_isa/P)*((1 +...
-        ((gamma - 1)*rho_isa*(VIAS)^2)/(2*gamma*P_isa))^...
+        ((gamma - 1)*rho_isa*(Vc_dxcg)^2)/(2*gamma*P_isa))^...
         (gamma/(gamma - 1)) - 1))^((gamma - 1)/gamma) - 1)) ;
     T_dxcg = T_m/(1+((gamma - 1)/2)*Mch_dxcg^2) ;
     rho_dxcg = P/(R*T_dxcg) ;   % density at c.g. shift
     
     % aerodynamic lift force
-    C_N = Wxcg/(0.5*rho_dxcg*(VIAS^(2))*S) ;
+    C_N = Wxcg/(0.5*rho_dxcg*(Vc_dxcg^(2))*S) ;
 
     % elevator effectiveness
-    Cmde_m = -(1/de_dxcg)*C_N*(dxcg/c) ;
+    Cmde_c = -(1/de_dxcg)*C_N*(dxcg/c) ;
     
 end
 
-function Cma_m = longstab(alpha, de, Cmde_m)
+function Cma_c = longstab(alpha, de, Cmde_c)
 
     A = alpha ;
     F = de ;
@@ -361,6 +362,6 @@ function Cma_m = longstab(alpha, de, Cmde_m)
     grad = (f3(7)-f3(1))/(A(7)-A(1)) ;
     
     % longitudinal stability
-    Cma_m = -grad*Cmde_m ;
+    Cma_c = -grad*Cmde_c ;
 
 end
