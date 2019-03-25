@@ -88,9 +88,11 @@ y_our = copt_our(1) + copt_our(2)*x.^2;
 y_ref = copt_ref(1) + copt_ref(2)*x.^2;
 plot(x,y_our) % plot regression curves
 plot(x, y_ref, '--');
-title('Lift-Drag Polar')
+% title('Lift-Drag Polar')
 xlabel('CL')
 ylabel('CD')
+text(0.05, 0.075 ,'Mach = [0.2-0.4]','FontSize',14)
+text(0.05, 0.07 ,'Re = [8 - 16] e6','FontSize',14)
 % add a legend
 legend({'flight test data points','reference data points', ...
     'flight test regression', 'reference data regression'},...
@@ -101,5 +103,7 @@ plot(alpha_our, CL_our); hold on
 plot (alpha_ref, CL_ref, '--')
 xlabel('Angle of Attack')
 ylabel('CL')
-title('CL-alpha')
+% title('CL-alpha')
+text(1.3, 0.8 ,'Mach = [0.2-0.4]','FontSize',14)
+text(1.3, 0.75 ,'Re = [8 - 16] e6','FontSize',14)
 legend({'flight test', 'reference data'}, 'Location' , 'northwest')
