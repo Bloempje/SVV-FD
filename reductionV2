@@ -255,12 +255,12 @@ function trimcurve(Ve_r, de_r)
     plot(65:95, zeros(31, 1),'k')
 
     legend('data points','Elevator trim curve')
-    text(70, -1.25, 'Configuration: (Gear up, flaps up)');
-    text(75, -0.5, 'Cm_{\alpha} < 0');
+    text(80, -0.55, 'Configuration: (Gear up, flaps retracted)');
+    text(75, -0.3, 'Cm_{\alpha} < 0');
 
     title('Elevator trim curve of the Cessna Citation - II PH-LAB')
-    xlabel('Reduced equivalent airspeed V_{e}')
-    ylabel('Reduced elevator deflection \delta_{e}')
+    xlabel('Reduced equivalent airspeed $$\tilde{V_{e}}$$', 'Interpreter', 'LaTeX')
+    ylabel('Reduced elevator deflection $${\delta^{*}}_{e}$$', 'Interpreter', 'LaTeX')
 
     grid on
 
@@ -296,12 +296,13 @@ function [Fe_r, detr, xcg] = controlcurve(Fe, Ws, W, Ve_r)
     ax.YDir = 'reverse' ;
     plot(65:95, zeros(31, 1),'k')
 
-    legend('data points','Elevator control force curve')
-    text(70, 40, 'Configuration: (Gear up, flaps up)');
+    legend('data points','Elevator control force curve', 'Location', 'southwest')
+    text(66, 75, 'Configuration: (Gear up, flaps retracted)');
+    text(77.5, 18, '\delta_{te} < \delta_{te_{0}}');
 
     title('Elevator control force curve of the Cessna Citation - II PH-LAB')
-    xlabel('Reduced equivalent airspeed V_{e}')
-    ylabel('Reduced elevator control force F_{e}')
+    xlabel('Reduced equivalent airspeed $$\tilde{V_{e}}$$', 'Interpreter', 'LaTeX')
+    ylabel('Reduced elevator control force $${F^{*}}_{e}$$', 'Interpreter', 'LaTeX')
 
     grid on
 
@@ -351,12 +352,13 @@ function Cma_c = longstab(alpha, de, Cmde_c)
     ax.YDir = 'reverse' ;
     plot(3:8, zeros(6, 1),'k')
 
-    legend('data points', 'Elevator trim curve', 'Location','northwest')
-    text(70, 40, 'Configuration: (Gear up, flaps up)');
+    legend('data points', 'Elevator trim curve', 'Location', 'northwest')
+    text(3.2, -1, 'Configuration: (Gear up, flaps retracted)');
+    text(5, -0.3, 'Cm_{\alpha} < 0');
 
-    title('Elevator trim curve w.r.t. AoA of the Cessna Citation - II PH-LAB')
-    xlabel('Angle of Attack')
-    ylabel('Elevator deflection \delta_{e}')
+    title('Elevator trim curve of the Cessna Citation - II PH-LAB')
+    xlabel('Angle of Attack $$\alpha$$', 'Interpreter', 'LaTeX')
+    ylabel('Elevator deflection $$\delta_{e}$$', 'Interpreter', 'LaTeX')
 
     grid on
     
