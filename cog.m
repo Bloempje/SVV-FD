@@ -49,6 +49,7 @@ for i=1:length(Time)
     end
     Moment_t(i) = Moment_BEM + Moment_fuel_t(i) + Moment_pay + Moment_S(i); %Continuous Moment
     CG_t(i) = Moment_t(i)/Mass_t(i) ;                                       %Continuous Xcog 
+    points
 end   
 
 %% PLOTS
@@ -69,6 +70,14 @@ figure
 plot(Time,CG_t,Time,Line_CG1,Time,Line_CG2) ;
 title('CG plot') ;
 
+
+
+figure
+plot(Time,Points)
+title('Mass and Xcg througout flight')
+xlabel('as')
+ylabel('asdf')
+
 %% SI UNITS & EXPORTS
 SI_Mass_t = P2KG(Mass_t) ; 
 SI_CG_t = INCH2CM(CG_t)/100 ; 
@@ -82,6 +91,39 @@ SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;
 
 
 toc                                                                         %Stop Timer
+%% Verification Functions
+function som = sommeren(input)
+    som = 0 ;
+    for i=1:length(input)
+        som = som + input(i) ; 
+    end
+end
+
+function outliers = Listverification(list,ref) 
+    outliers = [] ;
+    OL = isoutlier(list) ;
+    for i=1:length(list) 
+        if OL(i) == 1 
+        append(outliers,i,list(i)) ; 
+        elseif ref(i) ~= 0 
+            if sign(list(i)) ~= sign(ref(i)) 
+                append(outliers,i,list(i),ref(i)) ;
+            elseif floor(log10(list(i))) ~= floor(log10(ref(i)))
+                append(outliers,i,list(i),ref(i)) ;
+            end 
+        end
+    end 
+end
+
+function change = Crossverification(FUNCTION1,IN1,IN2)
+    %Should run MODULE1 with input argument IN1 and IN2
+    %outputs of this MODULE1 are the inputs the next MODULE2
+    %find change in output of MODULE2 due to IN1 -> IN2
+    OUT1 = FUNCTION1(IN1) ; 
+    OUT2 = FUNCTION1(IN2) ; 
+    disp OUT1
+    disp OUT2
+end 
 %% CONVERSON FUNCTIONS
 function pounds = KG2P(kg)                                                  %Kg    -> Lbs      
     pounds = kg / 0.453592;     
