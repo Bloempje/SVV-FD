@@ -36,7 +36,6 @@ Moment_fuel0 = 100*interp1(FF(:,1),FF(:,2),Mass_fuel0);                     %Mom
 
 Moment_0 = Moment_BEM + Moment_pay + Moment_fuel0;                          %Ramp T=0 Moment (INCH-POUNDS)
 CG_0 = Moment_0/Mass_0 ;                                                    %Ramp T=0 Xcog (INCH)
-
 %% CONTINUOUS MASS AND  CENTER OF GRAVITY
 for i=1:length(Time)
     Mass_t(i)= Mass_0 - FU(i) ;                                             %Continuous Mass
@@ -49,7 +48,6 @@ for i=1:length(Time)
     end
     Moment_t(i) = Moment_BEM + Moment_fuel_t(i) + Moment_pay + Moment_S(i); %Continuous Moment
     CG_t(i) = Moment_t(i)/Mass_t(i) ;                                       %Continuous Xcog 
-    points
 end   
 
 %% PLOTS
@@ -60,23 +58,26 @@ for i=1:length(Time)
     Line_CG1(i) = 276.10 ;
     Line_CG2(i) = 285.8 ;
 end
-figure
+%figure
 plot(Time,Mass_t,Time,FU,Time,Line_BEM,Time,Line_PAY,Time,Line_0);
 title('Total weight & Fuel consumed - plot')
-figure
+%figure
 plot(Time,stickforce,Time,AOA,Time,H_BC/100) ;
 title('Stickforce & AOA & ALT - plot') ;
-figure
+%figure
 plot(Time,CG_t,Time,Line_CG1,Time,Line_CG2) ;
 title('CG plot') ;
 
-
+CG_plot = CG_t(1:800:end) ;
+Mass_plot = Mass_t(1:800:end)
 
 figure
-plot(Time,Points)
-title('Mass and Xcg througout flight')
-xlabel('as')
-ylabel('asdf')
+scatter(CG_plot,Mass_plot,20,[0,0,1])
+title('Center of Gravity througout flight')
+xlabel('Xcg Fuselage station-inches  (Inch)')
+ylabel('Total Mass  (Pounds)')
+grid on
+grid minor
 
 %% SI UNITS & EXPORTS
 SI_Mass_t = P2KG(Mass_t) ; 
@@ -89,6 +90,9 @@ c = 2.0569 ;
 SI_CG_MAC = SI_CG_t - LEMAC ;
 SI_CG_PERCHORD = (SI_CG_MAC/c)*100 ;
 
+SI_CG_PERCHORD(1)
+SI_CG_PERCHORD(60121)
+SI_CG_PERCHORD((53*60*10)-89)
 
 toc                                                                         %Stop Timer
 %% Verification Functions
